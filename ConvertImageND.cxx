@@ -2552,8 +2552,12 @@ ImageConverter<TPixel, VDim>
 ::ProcessCommandLine(int argc, char *argv[])
 {
   // Disable multithreading
+#if ITK_VERSION_MAJOR >= 5
   itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads(1);
   itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads(1);
+#else
+  itk::MultiThreader::SetGlobalDefaultNumberOfThreads(1);
+#endif
 
   // The last command
   std::string lastCommand;
