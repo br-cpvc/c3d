@@ -24,6 +24,7 @@
 =========================================================================*/
 
 #include "ConvertImageND.h"
+#include "strto.h"
 
 #include "AddImages.h"
 #include "AlignByLandmarks.h"
@@ -152,35 +153,6 @@ unsigned char c3d_md[] = {
 using namespace itksys;
 
 extern const char *Convert3DVersionInfo;
-
-// Helper function: read a double, throw exception if unreadable
-double myatof(char *str)
-{
-  char *end = 0;
-  double d = strtod(str, &end);
-  if (*end != 0)
-    throw "strtod conversion failed";
-  return d;
-};
-
-long myatol(char *str)
-{
-  char *end = 0;
-  double d = strtol(str, &end, 10);
-  if (*end != 0)
-    throw "strtol conversion failed";
-  return d;
-};
-
-unsigned long myatoul(const char *cstr)
-{
-  char *end = 0;
-  unsigned long ul = strtoul(cstr, &end, 10);
-  if (*end != 0)
-    throw "strtoul conversion failed";
-  return ul;
-}
-
 
 std::string str_to_lower(const char *input)
 {
@@ -1276,7 +1248,7 @@ ImageConverter<TPixel, VDim>
       else if (!strcmp(argv[i], "-use-distance-transform"))
         use_distance_transform = true;
       else try
-        { axis = myatol(argv[i]); i++; break; }
+        { axis = strto<long>(argv[i]); i++; break; }
       catch(...)
         { break; }
       }
@@ -1697,7 +1669,7 @@ ImageConverter<TPixel, VDim>
     // Read all integer arguments
     for(int i = 1; i < argc; i++)
       try 
-        { pos.push_back((int) myatol(argv[i])); }
+        { pos.push_back((int) strto<long>(argv[i])); }
       catch(...)
         { break; }
 
@@ -1830,7 +1802,7 @@ ImageConverter<TPixel, VDim>
     for(int i = 1; i < argc; i++)
       {
       try
-        { vRetain.push_back((int) myatol(argv[i])); }
+        { vRetain.push_back((int) strto<long>(argv[i])); }
       catch(...)
         { break; }
       }
@@ -1916,7 +1888,7 @@ ImageConverter<TPixel, VDim>
     for(int i = 1; i < argc; i++)
       {
       try
-        { vReplace.push_back(myatof(argv[i])); }
+        { vReplace.push_back(strto<double>(argv[i])); }
       catch(...)
         { break; }
       }
@@ -2128,7 +2100,7 @@ ImageConverter<TPixel, VDim>
       }
       
       if (is_unsigned_short(t.c_str()))
-        labelsToSmooth.push_back((unsigned short)myatoul(t.c_str()));
+        labelsToSmooth.push_back((unsigned short)strto<unsigned long>(t.c_str()));
       else
         throw ConvertException("%s is not a valid label type", t.c_str());
     }
@@ -2168,7 +2140,7 @@ ImageConverter<TPixel, VDim>
     for(int i = 1; i < argc; i++)
       {
       try
-        { v_labels.push_back(myatof(argv[i])); }
+        { v_labels.push_back(strto<double>(argv[i])); }
       catch(...)
         { break; }
       }
